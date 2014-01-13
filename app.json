@@ -1,7 +1,7 @@
 {
     "version": "0.0.1",
     "name": "speakers",
-    "displayname": "Mycroft Speakers",
+    "displayName": "Mycroft Speakers",
     "instanceId": "speakers",
     "capabilities": {
       "audioOutput": "0.1"
