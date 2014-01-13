@@ -1,13 +1,13 @@
 {
     "version": "0.0.1",
-    "name": "text-to-speech",
-    "displayname": "Mycroft Text to Speech",
-    "instanceId": "text2speech",
+    "name": "speakers",
+    "displayname": "Mycroft Speakers",
+    "instanceId": "speakers",
     "capabilities": {
-      "tts": "0.1"
+      "audioOutput": "0.1"
     },
     "API": "0",
-    "description": "Using .NET to provide mycroft a most excellent voice",
+    "description": "Reads a file, puts out a stream",
     "dependencies": {
         "logger": "1.0"
     }
