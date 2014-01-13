@@ -1,2 +1,0 @@
-C:\Users\Ethan\Programs\RapdevXIV\app-speakers\AppSpeakers\AppSpeakers\bin\Debug\AppSpeakers.exe.config
-C:\Users\Ethan\Programs\RapdevXIV\app-speakers\AppSpeakers\bin\Debug\AppSpeakers.exe.config
