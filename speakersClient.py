@@ -14,13 +14,13 @@ def main():
   sendManifest(mycroft, manifest)
   checkManifest(mycroft)
   print("Manifest approved")
+  mycroft.send(bytes("6\nAPP_UP", 'UTF-8')) #APP_UP
 
   while True:
     threading.Thread(target=handleMessage(mycroft)).start()
 
+  
   """
-  input("APP_UP?")
-  mycroft.send(bytes("6\nAPP_UP", 'UTF-8'))
   input("APP_DOWN?")
   mycroft.send(bytes("8\nAPP_DOWN", 'UTF-8'))
   input("Close Connection?")
@@ -52,8 +52,8 @@ def checkManifest(mycroft):
     mycroft.close()
 
 def handleMessage(mycroft):
-  mesg = getMessage(mycroft)
-  print(mesg)
+  msg = getMessage(mycroft)
+  print(msg)
 
 def getMessage(mycroft):
   char = (mycroft.recv(1))
