@@ -59,13 +59,15 @@ def handleMessage(mycroft):
 
 def playSound(stream):
   audio = pygame.mixer
-  audio.channel(1)
-  audio.channel.play(audio.Sound(stream))
+  audio.Channel(1)
+  sound = audio.Sound(buffer = stream.recv(100*1024))
+  sound.play()	
 
 def connectToStream(port, ip, id):
   stream = socket.socket()
   stream.connect(('localhost', port))
-  stream.send(id)
+  stream.send(bytes(id, 'UTF-8'))
+  return stream
 
 def getMessage(mycroft):
   char = (mycroft.recv(1))
