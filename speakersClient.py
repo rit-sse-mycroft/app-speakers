@@ -2,6 +2,7 @@
 
 import socket               # Import socket module
 import sys
+import threading
 
 def main():
   mycroft = None
@@ -13,12 +14,18 @@ def main():
   sendManifest(mycroft, manifest)
   checkManifest(mycroft)
   print("Manifest approved")
+
+  while True:
+    threading.Thread(target=handleMessage(mycroft)).start()
+
+  """
   input("APP_UP?")
   mycroft.send(bytes("6\nAPP_UP", 'UTF-8'))
   input("APP_DOWN?")
   mycroft.send(bytes("8\nAPP_DOWN", 'UTF-8'))
   input("Close Connection?")
   mycroft.close()
+  """
 
 def init(mycroft, host, MYCROFT_PORT):
   mycroft = socket.socket()         # Create a socket object
@@ -43,6 +50,10 @@ def checkManifest(mycroft):
 
   if (split[0] != "APP_MANIFEST_OK"): #Checks that the manifest was approved, if not closes the connect.
     mycroft.close()
+
+def handleMessage(mycroft):
+  mesg = getMessage(mycroft)
+  print(mesg)
 
 def getMessage(mycroft):
   char = (mycroft.recv(1))
