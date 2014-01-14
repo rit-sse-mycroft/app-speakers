@@ -40,7 +40,6 @@ def connectToMycroft(mycroft, host, MYCROFT_PORT):
   mycroft.connect((host, MYCROFT_PORT))
 
 def sendManifest(mycroft, manifest):
-  input("Send manifest?")
   size = len(bytes(manifest, 'UTF-8'))
   mycroft.send(bytes((str(size)+"\n"+manifest), 'UTF-8'))
 
