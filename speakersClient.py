@@ -8,7 +8,7 @@ s = socket.socket()         # Create a socket object
 host = socket.gethostname() # Get local machine name
 MYCROFT_PORT = 1847                # Reserve a port for your service.
 manifest = "APP_MANIFEST " + open("./app.json").read()
-size = sys.getsizeof(manifest)
+size = len(bytes(manifest, 'UTF-8'))
 s.connect((host, MYCROFT_PORT))
 input("Send manifest?")
 s.send(bytes((str(size)+"\n"+manifest), 'UTF-8'))
