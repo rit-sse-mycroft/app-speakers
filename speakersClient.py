@@ -20,7 +20,6 @@ def main():
   input("Close Connection?")
   s.close()
 
-
 def init(s, host, MYCROFT_PORT):
   s = socket.socket()         # Create a socket object
   host = socket.gethostname() # Get local machine name
@@ -39,6 +38,13 @@ def sendManifest(s, manifest):
   s.send(bytes((str(size)+"\n"+manifest), 'UTF-8'))
 
 def checkManifest(s):
+  msg = getMessage(s)
+  split = msg.split() 
+
+  if (split[0] != "APP_MANIFEST_OK"): #Checks that the manifest was approved, if not closes the connect.
+    s.close()
+
+def getMessage(s):
   char = (s.recv(1))
   msg = char
 
@@ -50,11 +56,8 @@ def checkManifest(s):
   numBytes = int(msg[:(len(msg)-1)]) 
   msg = s.recv(numBytes) #Reads the rest of the message.
 
-  msg = msg.decode('UTF-8') #decodes the message.
-  split = msg.split() 
-
-  if (split[0] != "APP_MANIFEST_OK"): #Checks that the manifest was approved, if not closes the connect.
-    s.close()
+  msg = msg.decode('UTF-8') #decodes the message.	
+  return msg
 
 
 if __name__ == '__main__':
