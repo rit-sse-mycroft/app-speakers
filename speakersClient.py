@@ -6,8 +6,10 @@ import threading
 import json
 import pygame
 import random
+import time
 
 pygame.mixer.init(frequency=15050, size=-16, channels=2, buffer=4096)
+currentPriority = 10
 
 def main():
   mycroft = None
@@ -22,7 +24,7 @@ def main():
   mycroft.send(bytes("6\nAPP_UP", 'UTF-8')) #APP_UP
   
   threadCount = 0
-  while threadCount < 5:
+  while threadCount < 10:
     threading.Thread(target=runThread(mycroft)).start()
     threadCount += 1
 
@@ -48,7 +50,7 @@ def sendManifest(mycroft, manifest):
 
 def checkManifest(mycroft):
   msg = getMessage(mycroft)
-  splitMsg = msg.split() 
+  splitMsg = msg.split()
 
   if (splitMsg[0] != "APP_MANIFEST_OK"): #Checks that the manifest was approved, if not closes the connect.
     mycroft.close()
@@ -58,8 +60,6 @@ def handleMessage(mycroft):
   splitMsg = msg.split()
   parseMsg = json.loads(splitMsg[1])
   print("got a message")
-  print(splitMsg)
-  print(parseMsg)
   if (parseMsg['remoteProcedure'] == "doStream"):
   	stream = connectToStream(parseMsg['port'], parseMsg['ip'], parseMsg['id'])
   	playSound(stream)
@@ -68,6 +68,9 @@ def playSound(stream):
   audio = pygame.mixer
   audio.Channel(1)
   sound = audio.Sound(buffer = stream.recv(200*1024))
+  while pygame.mixer.get_busy():
+  	time.sleep(1)
+  	#waiting for it to stop playing something else (if there is something else playing)
   sound.play()	
 
 def connectToStream(port, ip, id):
