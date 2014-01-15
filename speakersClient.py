@@ -5,8 +5,9 @@ import sys
 import threading
 import json
 import pygame
+import random
 
-pygame.mixer.init()
+pygame.mixer.init(frequency=15050, size=-16, channels=2, buffer=4096)
 
 def main():
   mycroft = None
@@ -19,9 +20,15 @@ def main():
   checkManifest(mycroft)
   print("Manifest approved")
   mycroft.send(bytes("6\nAPP_UP", 'UTF-8')) #APP_UP
+  
+  threadCount = 0
+  while threadCount < 5:
+    threading.Thread(target=runThread(mycroft)).start()
+    threadCount += 1
 
-  while True:
-    threading.Thread(target=handleMessage(mycroft)).start()
+def runThread(mycroft):
+	while True:
+		handleMessage(mycroft)
 
 def init(mycroft, host, MYCROFT_PORT):
   mycroft = socket.socket()         # Create a socket object
@@ -60,7 +67,7 @@ def handleMessage(mycroft):
 def playSound(stream):
   audio = pygame.mixer
   audio.Channel(1)
-  sound = audio.Sound(buffer = stream.recv(100*1024))
+  sound = audio.Sound(buffer = stream.recv(200*1024))
   sound.play()	
 
 def connectToStream(port, ip, id):
