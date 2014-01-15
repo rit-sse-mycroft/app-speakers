@@ -10,6 +10,7 @@ import time
 
 pygame.mixer.init(frequency=15050, size=-16, channels=2, buffer=4096)
 currentPriority = 10
+queue = []
 
 def main():
   mycroft = None
@@ -22,15 +23,29 @@ def main():
   checkManifest(mycroft)
   print("Manifest approved")
   mycroft.send(bytes("6\nAPP_UP", 'UTF-8')) #APP_UP
+
+  #threading.Thread(target=musicThread(mycroft)).start()
   
   threadCount = 0
   while threadCount < 10:
-    threading.Thread(target=runThread(mycroft)).start()
+    threading.Thread(target=listenerThread(mycroft)).start()
     threadCount += 1
 
-def runThread(mycroft):
-	while True:
-		handleMessage(mycroft)
+def musicThread(mycroft):
+  print("Music Thread started")
+  global queue
+  while True:
+  	if ((queue != None) and (len(queue) != 0)):
+  		queue = sorted(queue, key=lambda song: song[1])
+  		nextSound = queue.pop(0)
+  	else:
+  		time.sleep(5)
+
+
+def listenerThread(mycroft):
+  print("Listener Thread started")
+  while True:
+    handleMessage(mycroft)
 
 def init(mycroft, host, MYCROFT_PORT):
   mycroft = socket.socket()         # Create a socket object
@@ -61,17 +76,15 @@ def handleMessage(mycroft):
   parseMsg = json.loads(splitMsg[1])
   print("got a message")
   if (parseMsg['remoteProcedure'] == "doStream"):
-  	stream = connectToStream(parseMsg['port'], parseMsg['ip'], parseMsg['id'])
-  	playSound(stream)
+    stream = connectToStream(parseMsg['port'], parseMsg['ip'], parseMsg['id'])
+    queueSound(stream, parseMsg['priority'])
 
-def playSound(stream):
+def queueSound(stream, priority):
+  global queue
   audio = pygame.mixer
   audio.Channel(1)
   sound = audio.Sound(buffer = stream.recv(200*1024))
-  while pygame.mixer.get_busy():
-  	time.sleep(1)
-  	#waiting for it to stop playing something else (if there is something else playing)
-  sound.play()	
+  queue.append([sound, priority])
 
 def connectToStream(port, ip, id):
   stream = socket.socket()
@@ -91,7 +104,7 @@ def getMessage(mycroft):
   numBytes = int(msg[:(len(msg)-1)]) 
   msg = mycroft.recv(numBytes) #Reads the rest of the message.
 
-  msg = msg.decode('UTF-8') #decodes the message.	
+  msg = msg.decode('UTF-8') #decodes the message.  
   return msg
 
 
