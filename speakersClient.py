@@ -36,10 +36,10 @@ def musicThread(mycroft):
     global queue
     while True:
         if ((queue != None) and (len(queue) != 0)):
-                queue = sorted(queue, key=lambda song: song[1])
-                nextSound = queue.pop(0)
+            queue = sorted(queue, key=lambda song: song[1])
+            nextSound = queue.pop(0)
         else:
-                time.sleep(5)
+            time.sleep(5)
 
 
 def listenerThread(mycroft):
