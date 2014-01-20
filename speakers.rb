@@ -24,7 +24,7 @@ class Speakers < Mycroft::Client
       `ffplay rtp://127.0.0.1:#{@port}`
     elsif parsed[:type] == 'MSG_QUERY'
       #get ip address
-      if parsed[:data]["action"] == "get ip"
+      if parsed[:data]["action"] == "get_ip"
         clientIP = Socket::getaddrinfo(Socket.gethostname,"echo",Socket::AF_INET)[0][3]
         content = {ip: clientIP, port: @port}
         query_success(parsed[:data]["id"], content)
