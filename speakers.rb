@@ -5,12 +5,13 @@ class Speakers < Mycroft::Client
 
   attr_accessor :verified
 
-  def initialize
+  def initialize(host, port)
     @key = '/path/to/key'
     @cert = '/path/to/cert'
     @manifest = './app.json'
     @port = 3000
     @verified = false
+    super
   end
 
   def connect
