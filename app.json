@@ -6,7 +6,7 @@
     "capabilities": {
       "audioOutput": "0.0.1"
     },
-    "API": "0",
+    "API": 0,
     "description": "Reads a file, puts out a stream",
     "dependencies": {
         "logger": "1.0.0"
