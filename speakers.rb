@@ -22,13 +22,13 @@ class Speakers < Mycroft::Client
     if parsed[:type] == 'APP_MANIFEST_OK' or parsed[:type] == 'APP_MANIFEST_FAIL'
       check_manifest(parsed)
       @verified = true
-      `ffplay rtp://127.0.0.1:#{@port}`
+      up
     elsif parsed[:type] == 'MSG_QUERY'
       #get ip address
-      if parsed[:data]["action"] == "get_ip"
-        clientIP = Socket::getaddrinfo(Socket.gethostname,"echo",Socket::AF_INET)[0][3]
-        content = {ip: clientIP, port: @port}
-        query_success(parsed[:data]["id"], content)
+      if parsed[:data]["action"] == "doStream"
+        clientIP = parsed[:data]['data']['ip']
+        port = parsed[:data]['data']['port']
+        `vlc tcp://#{clientIP}:#{port}`
       end
     end
   end
