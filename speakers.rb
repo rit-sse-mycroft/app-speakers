@@ -24,11 +24,12 @@ class Speakers < Mycroft::Client
       @verified = true
       up
     elsif parsed[:type] == 'MSG_QUERY'
-      #get ip address
-      if parsed[:data]["action"] == "doStream"
+      if parsed[:data]["action"] == "stream_tts"
         clientIP = parsed[:data]['data']['ip']
         port = parsed[:data]['data']['port']
         `vlc tcp://#{clientIP}:#{port} --sout-all vlc://quit`
+      elsif parsed[:data]["action"] == "stream_video"
+        `vlc #{parsed[:data]} --sout-all vlc://quit`
       end
     end
   end
