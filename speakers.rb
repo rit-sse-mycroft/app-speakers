@@ -28,7 +28,7 @@ class Speakers < Mycroft::Client
       if parsed[:data]["action"] == "doStream"
         clientIP = parsed[:data]['data']['ip']
         port = parsed[:data]['data']['port']
-        `vlc tcp://#{clientIP}:#{port}`
+        `vlc tcp://#{clientIP}:#{port} --sout-all vlc://quit`
       end
     end
   end
