@@ -9,7 +9,6 @@ class Speakers < Mycroft::Client
     @key = '/path/to/key'
     @cert = '/path/to/cert'
     @manifest = './app.json'
-    @generate_instance_ids = true
     @port = 3000
     @verified = false
     super
