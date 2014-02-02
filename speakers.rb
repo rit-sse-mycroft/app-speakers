@@ -1,5 +1,6 @@
 require 'mycroft'
 require 'socket'
+require './portaudio'
 
 class Speakers < Mycroft::Client
 
@@ -13,30 +14,21 @@ class Speakers < Mycroft::Client
     @verified = false
     super
   end
-
-  def connect
-    # Your code here
+  
+  on 'APP_DEPENDENCY' do |data|
+    up
   end
 
-  def on_data(parsed)
-    if parsed[:type] == 'APP_MANIFEST_OK' or parsed[:type] == 'APP_MANIFEST_FAIL'
-      check_manifest(parsed)
-      @verified = true
-      up
-    elsif parsed[:type] == 'MSG_QUERY'
-      if parsed[:data]["action"] == "stream_tts"
-        clientIP = parsed[:data]['data']['ip']
-        port = parsed[:data]['data']['port']
-        `vlc tcp://#{clientIP}:#{port} --sout-all vlc://quit`
-      elsif parsed[:data]["action"] == "stream_video"
-        `vlc #{parsed[:data]} --sout-all vlc://quit`
-      end
+  on 'MSG_QUERY' do |data|
+    if data["action"] == "stream_tts"
+      clientIP = data['data']['ip']
+      port = data['data']['port']
+      `vlc tcp://#{clientIP}:#{port} --sout-all vlc://quit`
+    elsif data["action"] == "stream_video"
+      `vlc #{data} --sout-all vlc://quit`
     end
   end
 
-  def on_end
-    # Your code here
-  end
 end
 
 Mycroft.start(Speakers)
