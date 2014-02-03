@@ -5,7 +5,7 @@ def app_dependency(client, msg_type, data):
     client.up()
 
 def msg_query(client, msg_type, data):
-    if sys.process == 'darwin':
+    if sys.platform == 'darwin':
         vlc = '/Applications/VLC.app/Contents/MacOS/VLC'
     else:
         vlc = 'vlc'
