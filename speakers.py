@@ -14,8 +14,8 @@ def msg_query(client, msg_type, data):
     elif data['action'] == 'stream_spotify':
         client_ip = data['data']['ip']
         port = data['data']['port']
-        client = socket.create_connection((client_ip, port))
-        thread = threading.Thread(target=play_music, args=[client])
+        audio_client = socket.create_connection((client_ip, port))
+        thread = threading.Thread(target=play_music, args=[audio_client])
         thread.start()
 
 def play_music(client):
