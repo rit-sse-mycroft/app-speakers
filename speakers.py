@@ -1,16 +1,21 @@
 from mycroft.client import MycroftClient
-import subprocess, pyaudio, socket, threading
+import subprocess, pyaudio, socket, threading, sys
 
 def app_dependency(client, msg_type, data):
     client.up()
 
 def msg_query(client, msg_type, data):
+    if sys.process == 'darwin':
+        vlc = '/Applications/VLC.app/Contents/MacOS/VLC'
+    else:
+        vlc = 'vlc'
+
     if data['action'] == 'stream_tts':
         client_ip = data['data']['ip']
         port = data['data']['port']
-        subprocess.call('vlc tcp://{0}:{1} vlc://quit'.format(client_ip, port))
+        subprocess.call('{0} tcp://{1}:{2} vlc://quit'.format(vlc, client_ip, port))
     elif data['action'] == 'stream_video':
-        subprocess.call('vlc {0} vlc://quit'.format(data['data']))
+        subprocess.call('{0} {1} vlc://quit'.format(vlc, data['data']))
     elif data['action'] == 'stream_spotify':
         client_ip = data['data']['ip']
         port = data['data']['port']
