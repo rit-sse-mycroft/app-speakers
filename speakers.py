@@ -45,7 +45,7 @@ def play_music(client):
 
 
 
-client = MycroftClient('localhost', 1847, './app.json')
+client = MycroftClient('speakers', 'localhost', 1847, './app.json')
 client.on('APP_DEPENDENCY', app_dependency)
 client.on('MSG_QUERY', msg_query)
 client.start()
