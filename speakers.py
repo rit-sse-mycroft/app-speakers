@@ -8,10 +8,16 @@ USAGE:
 
 from mycroft.client import MycroftClient
 import subprocess
-import pyaudio
 import socket
 import threading
 import sys
+
+# only import pyaudio if it is installed, otherwise just show a warning
+try:
+    import pyaudio
+except ImportError:
+    print("WARNING: pyaudio not found, functionality is limited")
+    pyaudio = None
 
 
 def app_dependency(client, msg_type, data):
@@ -50,6 +56,10 @@ def msg_query(client, msg_type, data):
 
 
 def play_music(client):
+    if not pyaudio:
+        print("WARNING: Cannot play this stream; pyaudio not installed")
+        return
+
     chunk = 2048
     p = pyaudio.PyAudio()
     stream = p.open(
