@@ -35,12 +35,15 @@ class Speakers:
         # randomize which port is used (this should be enough)
         port = random.randint(2000, 60000)
         # start up vlc
-        subprocess.call(
-            '{0} --extraint rc --rc-host=localhost:{1}'.format(
-                vlc,
-                port
+
+        def start_vlc():
+            subprocess.call(
+                '{0} --extraint rc --rc-host=localhost:{1}'.format(
+                    vlc,
+                    port
+                )
             )
-        )
+        threading.Thread(target=start_vlc).start()
         self.vlc_conn = telnetlib.Telnet(
             host='localhost',
             port=port
@@ -53,11 +56,11 @@ class Speakers:
         if data['action'] == 'stream_tts':
             client_ip = data['data']['ip']
             port = data['data']['port']
-            cmd = 'enqueue tcp://{0}:{1}\n'.format(client_ip, port)
-            self.vlc_conn.write(cmd)
+            cmd = 'enqueue tcp://{0}:{1}\nplay\n'.format(client_ip, port)
+            self.vlc_conn.write(cmd.encode('utf-8'))
 
         elif data['action'] == 'stream_video':
-            cmd = 'enqueue {0}'.format(data['data'])
+            cmd = 'enqueue {0}\nplay\n'.format(data['data'])
             self.vlc_conn.write(cmd)
 
         elif data['action'] == 'stream_spotify':
