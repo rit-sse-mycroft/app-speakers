@@ -6,13 +6,13 @@ USAGE:
 `python speakers.py`
 """
 
-from mycroft.client import MycroftClient
-import subprocess
+import mycroft
 import socket
 import threading
 import telnetlib
 import random
 import sys
+import subprocess
 
 # only import pyaudio if it is installed, otherwise just show a warning
 try:
@@ -22,10 +22,9 @@ except ImportError:
     pyaudio = None
 
 
-class Speakers:
+class Speakers(mycroft.App):
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self):
         # initialize VLC
         if sys.platform == 'darwin':
             vlc = '/Applications/VLC.app/Contents/MacOS/VLC'
@@ -49,23 +48,25 @@ class Speakers:
             port=port
         )
 
-    def app_dependency(self, client, msg_type, data):
-        self.client.up()
+    @mycroft.on('APP_DEPENDENCY')
+    def app_dependency(self, verb, body):
+        self.up()
 
-    def msg_query(self, client, msg_type, data):
-        if data['action'] == 'stream_tts':
-            client_ip = data['data']['ip']
-            port = data['data']['port']
+    @mycroft.on('MSG_QUERY')
+    def msg_query(self, verb, body):
+        if body['action'] == 'stream_tts':
+            client_ip = body['data']['ip']
+            port = body['data']['port']
             cmd = 'enqueue tcp://{0}:{1}\nplay\n'.format(client_ip, port)
             self.vlc_conn.write(cmd.encode('utf-8'))
 
-        elif data['action'] == 'stream_video':
-            cmd = 'enqueue {0}\nplay\n'.format(data['data'])
+        elif body['action'] == 'stream_video':
+            cmd = 'enqueue {0}\nplay\n'.format(body['data'])
             self.vlc_conn.write(cmd)
 
-        elif data['action'] == 'stream_spotify':
-            client_ip = data['data']['ip']
-            port = data['data']['port']
+        elif body['action'] == 'stream_spotify':
+            client_ip = body['data']['ip']
+            port = body['data']['port']
             audio_client = socket.create_connection((client_ip, port))
             thread = threading.Thread(target=play_music, args=[audio_client])
             thread.start()
@@ -96,8 +97,6 @@ class Speakers:
 
         p.terminate()
 
-client = MycroftClient('speakers', 'localhost', 1847, './app.json')
-speakers = Speakers(client)
-client.on('APP_DEPENDENCY', speakers.app_dependency)
-client.on('MSG_QUERY', speakers.msg_query)
-client.start()
+if __name__ == '__main__':
+    app = Speakers()
+    app.start('app.json', 'speakers')
