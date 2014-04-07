@@ -49,11 +49,11 @@ class Speakers(mycroft.App):
         )
 
     @mycroft.on('APP_DEPENDENCY')
-    def app_dependency(self, verb, body):
+    def app_dependency(self, body):
         self.up()
 
     @mycroft.on('MSG_QUERY')
-    def msg_query(self, verb, body):
+    def msg_query(self, body):
         if body['action'] == 'stream_tts':
             client_ip = body['data']['ip']
             port = body['data']['port']
