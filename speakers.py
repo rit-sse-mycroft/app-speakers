@@ -99,4 +99,9 @@ class Speakers(mycroft.App):
 
 if __name__ == '__main__':
     app = Speakers()
-    app.start('app.json', 'speakers')
+    app.start(
+        'app.json',
+        'speakers',
+        host=sys.argv[1],
+        port=int(sys.argv[2])
+    )
