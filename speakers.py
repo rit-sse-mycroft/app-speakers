@@ -10,6 +10,7 @@ import mycroft
 import socket
 import threading
 import telnetlib
+import traceback
 import random
 import sys
 import subprocess
@@ -68,7 +69,7 @@ class Speakers(mycroft.App):
             client_ip = body['data']['ip']
             port = body['data']['port']
             audio_client = socket.create_connection((client_ip, port))
-            thread = threading.Thread(target=play_music, args=[audio_client])
+            thread = threading.Thread(target=self.play_music, args=[audio_client])
             thread.start()
 
     def play_music(self, client):
@@ -96,6 +97,7 @@ class Speakers(mycroft.App):
         stream.close()
 
         p.terminate()
+
 
 if __name__ == '__main__':
     app = Speakers()
